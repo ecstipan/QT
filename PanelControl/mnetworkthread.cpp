@@ -12,8 +12,8 @@ void mNetworkThread::run()
 {
     shutdown = false;
     while (!shutdown) {
-
-        usleep(1);
+        this->msleep(300);
+        QThread::msleep(300);
     }
     quit();
 }

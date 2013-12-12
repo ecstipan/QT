@@ -26,7 +26,8 @@ HEADERS  += mainwindow.h \
     mvideothread.h \
     mnetworkthread.h \
     muithread.h \
-    mallthreads.h
+    mallthreads.h \
+    main.h
 
 FORMS    += mainwindow.ui
 

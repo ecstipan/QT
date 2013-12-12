@@ -2,6 +2,7 @@
 #include <QtCore>
 #include <QDebug>
 #include <QPixmap>
+#include <QThread>
 
 mUIThread::mUIThread(QMutex *pixel)
 {
@@ -15,13 +16,13 @@ void mUIThread::run()
 
     while (!shutdown) {
         this->pixelMutex->lock();
-            if (globalProcessedImage.data()->isNull() == false) {
-                QImage temp = *globalProcessedImage.data();
+            if (globalRawImage.data()->isNull() == false && parentWindow->isDisplayingVideo == true) {
+                QImage temp = *globalRawImage.data();
                 this->parentWindow->updateRawVideo(temp);
                 //qDebug() << "Updating Image";
             } //else qDebug() << "Unable to update GUI";
         this->pixelMutex->unlock();
-        usleep(30);
+        msleep(33);
     }
     quit();
 }
