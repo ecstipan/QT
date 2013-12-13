@@ -32,7 +32,7 @@
 #include <QApplication>
 
 //Define things for globally allocated memory
-MPanel **_globalPanels[121][121];
+MPanel *_globalPanels[121][121];
 cv::VideoCapture videoInput;
 unsigned short int cameraNumber = 0;
 unsigned int cameraWidth = 1920;
