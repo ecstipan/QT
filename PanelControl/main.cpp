@@ -168,6 +168,12 @@ int main(int argc, char *argv[])
     //Finally ready to display something
     windowHome.show();
 
+    //Let's do some test initialization
+    if (MPanel::addPanel(0,0)) qDebug() << "Added panel!";
+
+    if (MPanel::panelExistsAt(0,1)) qDebug() << "Found Panel!";
+        else qDebug() << "Did not find Panel!";
+
     //Let's get the ball rolling...
     return a.exec();
 }

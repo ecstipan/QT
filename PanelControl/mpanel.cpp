@@ -322,6 +322,48 @@ MPanel* MPanel::getPanelAtLocation(int xpos, int ypos)
     return NULL;
 }
 
+static void MPanel::refreshLocalArrayMap()
+{
+    arrayWidth = getArrayWidth();
+    arrayHeight = getArrayHeight();
+    boundLeft = getArrayBoundLeft();
+    boundTop = getArrayBoundTop();
+    boundRight = getArrayBoundRight();
+    boundBottom = getArrayBoundBottom();
+
+    //do other things as necessary
+}
+
+static unsigned short int MPanel::getArrayWidth()
+{
+    return getArrayBoundRight() - getArrayBoundLeft() + 1;
+}
+
+static unsigned short int MPanel::getArrayHeight()
+{
+    return getArrayBoundBottom() - getArrayBoundTop() + 1;
+}
+
+static unsigned short int MPanel::getArrayBoundLeft()
+{
+
+}
+
+static unsigned short int MPanel::getArrayBoundTop()
+{
+
+}
+
+static unsigned short int MPanel::getArrayBoundRight()
+{
+
+}
+
+static unsigned short int MPanel::getArrayBoundBottom()
+{
+
+}
+
 MPanel::~MPanel()
 {
 

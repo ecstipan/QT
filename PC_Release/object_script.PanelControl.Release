@@ -8,7 +8,5 @@ INPUT(
 ./release\muithread.o
 ./release\mallthreads.o
 ./release\moc_mainwindow.o
-./release\moc_mpanel.o
-./release\moc_mpanelstatus.o
 ./release\moc_mallthreads.o
 );

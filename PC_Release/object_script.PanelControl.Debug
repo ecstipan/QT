@@ -8,7 +8,5 @@ INPUT(
 ./debug\muithread.o
 ./debug\mallthreads.o
 ./debug\moc_mainwindow.o
-./debug\moc_mpanel.o
-./debug\moc_mpanelstatus.o
 ./debug\moc_mallthreads.o
 );
