@@ -1,0 +1,12 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\mpanel.o
+./release\mpanelstatus.o
+./release\mvideothread.o
+./release\mnetworkthread.o
+./release\muithread.o
+./release\mallthreads.o
+./release\moc_mainwindow.o
+./release\moc_mallthreads.o
+);

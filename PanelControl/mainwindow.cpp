@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->fpsBox->addItem("5 FPS");
     this->ui->fpsBox->addItem("1 FPS");
 
+    //initialize our windows
+    consoleWindow = new ConsoleWindow();
+
     //Setup our slots and signals for faster processing...;
     connect(ui->enableButton, SIGNAL(clicked()), this, SLOT(handleEnable()));
     connect(ui->disableButton, SIGNAL(clicked()), this, SLOT(handleDisable()));
@@ -49,12 +52,30 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->fpsButton, SIGNAL(clicked()), this, SLOT(handleFPSButton()));
     connect(ui->resBox, SIGNAL(activated(int)), this, SLOT(handleBoxRes(int)));
     connect(ui->fpsBox, SIGNAL(activated(int)), this, SLOT(handleBoxFPS(int)));
+
+    connect(ui->actionDebug_Console, SIGNAL(triggered()), this, SLOT(openConsoleWindow()));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(closeProgram()));
+}
+
+void MainWindow::closeProgram()
+{
+    this->close();
+}
+
+void MainWindow::openConsoleWindow()
+{
+    consoleWindow->show();
+}
+
+void MainWindow::addConsoleLogEvent(QString stuff)
+{
+    this->consoleWindow->addLog(stuff);
 }
 
 MainWindow::~MainWindow()
 {
     //Kill our Threads
-    this->mutex->lock();
+    if(this->mutex) this->mutex->lock();
     if (thread1) {
         qDebug() << "Stopping Video Thread...";
         thread1->shutdown=true;
@@ -94,12 +115,12 @@ void MainWindow::updateRawVideo(QImage img) {
 }
 
 void MainWindow::handleEnable(){
-    qDebug() << "Enabling...";
+    logConsole(QString("Enabling video input..."));
     openCamera();
 }
 
 void MainWindow::handleDisable(){
-    qDebug() << "Disabling...";
+    logConsole(QString("Disabling video input..."));
     closeCamera();
     this->ui->rawLabel->clear();
 }
@@ -121,6 +142,12 @@ void MainWindow::handleDropDownCamSelect(int cam) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+    //kill our windows
+    qDebug() << "Closing child windows...";
+    consoleWindow->destroy = true;
+    consoleWindow->close();
+    consoleWindow->~ConsoleWindow();
+
     if (thread1) {
         qDebug() << "Stopping Video Thread...";
         thread1->shutdown=true;

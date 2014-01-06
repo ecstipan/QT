@@ -63,13 +63,15 @@ public:
     static bool deletePanel(int xpos, int ypos);
     static bool panelExistsAt(int xpos, int ypos);
     static MPanel* getPanelAtLocation(int xpos, int ypos);
-    static void refreshLocalArrayMap();
+    //Map Tools
     static unsigned short int getArrayWidth();
     static unsigned short int getArrayHeight();
     static unsigned short int getArrayBoundLeft();
     static unsigned short int getArrayBoundTop();
     static unsigned short int getArrayBoundRight();
     static unsigned short int getArrayBoundBottom();
+    static void refreshLocalArrayMap();
+
 signals:
 
 public slots:

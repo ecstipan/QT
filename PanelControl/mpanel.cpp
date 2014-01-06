@@ -5,6 +5,14 @@
 
 extern MPanel *_globalPanels[121][121];
 
+//static declarations
+unsigned short int MPanel::arrayWidth = 0;
+unsigned short int MPanel::arrayHeight = 0;
+unsigned short int MPanel::boundLeft = 61;
+unsigned short int MPanel::boundTop = 61;
+unsigned short int MPanel::boundRight = 61;
+unsigned short int MPanel::boundBottom = 61;
+
 MPanel::MPanel()
 {
     this->dataMutex = new QMutex();
@@ -322,46 +330,46 @@ MPanel* MPanel::getPanelAtLocation(int xpos, int ypos)
     return NULL;
 }
 
-static void MPanel::refreshLocalArrayMap()
-{
-    arrayWidth = getArrayWidth();
-    arrayHeight = getArrayHeight();
-    boundLeft = getArrayBoundLeft();
-    boundTop = getArrayBoundTop();
-    boundRight = getArrayBoundRight();
-    boundBottom = getArrayBoundBottom();
-
-    //do other things as necessary
-}
-
-static unsigned short int MPanel::getArrayWidth()
+unsigned short int MPanel::getArrayWidth()
 {
     return getArrayBoundRight() - getArrayBoundLeft() + 1;
 }
 
-static unsigned short int MPanel::getArrayHeight()
+unsigned short int MPanel::getArrayHeight()
 {
     return getArrayBoundBottom() - getArrayBoundTop() + 1;
 }
 
-static unsigned short int MPanel::getArrayBoundLeft()
+unsigned short int MPanel::getArrayBoundLeft()
 {
-
+    return 0;
 }
 
-static unsigned short int MPanel::getArrayBoundTop()
+unsigned short int MPanel::getArrayBoundTop()
 {
-
+    return 0;
 }
 
-static unsigned short int MPanel::getArrayBoundRight()
+unsigned short int MPanel::getArrayBoundRight()
 {
-
+    return 0;
 }
 
-static unsigned short int MPanel::getArrayBoundBottom()
+unsigned short int MPanel::getArrayBoundBottom()
 {
+    return  0;
+}
 
+void MPanel::refreshLocalArrayMap()
+{
+    MPanel::arrayWidth = MPanel::getArrayWidth();
+    MPanel::arrayHeight = MPanel::getArrayHeight();
+    MPanel::boundLeft = MPanel::getArrayBoundLeft();
+    MPanel::boundTop = MPanel::getArrayBoundTop();
+    MPanel::boundRight = MPanel::getArrayBoundRight();
+    MPanel::boundBottom = MPanel::getArrayBoundBottom();
+
+    //do other things as necessary
 }
 
 MPanel::~MPanel()

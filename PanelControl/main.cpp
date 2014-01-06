@@ -45,6 +45,12 @@ QMutex _PixelAccess;
 //Setup our Main Window
 MainWindow *mainWindowPointer;
 
+void logConsole(QString temp)
+{
+    if (mainWindowPointer != NULL)
+        mainWindowPointer->addConsoleLogEvent(temp);
+}
+
 void selectCamera(int cam) {
     cameraNumber = cam;
     openCamera();
@@ -122,6 +128,8 @@ int main(int argc, char *argv[])
     MainWindow windowHome;
     mainWindowPointer = &windowHome;
 
+    logConsole(QString("Initializing Camera Interface..."));
+
     int i;
     for (i=0; i<10; i++) {
         videoInput.open(i);
@@ -160,6 +168,7 @@ int main(int argc, char *argv[])
     _UIThread.globalRawImage = rawVideoInput;
     _UIThread.globalProcessedImage = processedVideoInput;
 
+    logConsole(QString("Initializing threads... "));
     //Start our Threads
     _VideoThread.start(QThread::NormalPriority);
     _NetworkUpdateThread.start(QThread::NormalPriority);

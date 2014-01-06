@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QMutex>
 #include "mallthreads.h"
+#include "consolewindow.h"
 #include <QLabel>
 
 namespace Ui {
@@ -26,10 +27,15 @@ public:
     void updateRawVideo(QImage img);
     void addCameraToSelector();
     QMutex *mutex;
+    void addConsoleLogEvent(QString stuff);
 private:
+    ConsoleWindow *consoleWindow;
     Ui::MainWindow *ui;
     void closeEvent(QCloseEvent *event);
+public slots:
+    void openConsoleWindow();
 private slots:
+    void closeProgram();
     void handleEnable();
     void handleDisable();
     void handleUseDevice();

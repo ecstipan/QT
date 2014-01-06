@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     mvideothread.cpp \
     mnetworkthread.cpp \
     muithread.cpp \
-    mallthreads.cpp
+    mallthreads.cpp \
+    consolewindow.cpp
 
 HEADERS  += mainwindow.h \
     mpanel.h \
@@ -27,9 +28,11 @@ HEADERS  += mainwindow.h \
     mnetworkthread.h \
     muithread.h \
     mallthreads.h \
-    main.h
+    main.h \
+    consolewindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    consolewindow.ui
 
 INCLUDEPATH += D:/OpenCV/build/install/include/opencv2
 INCLUDEPATH += D:/OpenCV/build/install/include

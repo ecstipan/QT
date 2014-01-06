@@ -2,7 +2,7 @@
 #define MAIN_H
 
 #include "mpanel.h"
-
+void logConsole(QString temp);
 void openCamera();
 void closeCamera();
 void selectCamera(int);
