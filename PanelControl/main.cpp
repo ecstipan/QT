@@ -32,18 +32,25 @@
 #include <QApplication>
 
 //Define things for globally allocated memory
-MPanel *_globalPanels[121][121];
+MPanel *_globalPanels[122][122];
 cv::VideoCapture videoInput;
 unsigned short int cameraNumber = 0;
 unsigned int cameraWidth = 1920;
 unsigned int cameraHeight = 1080;
-unsigned int cameraFPS = 30;
+unsigned int cameraFPS = 25;
 
 //setup voletile shared memory
 QMutex _PixelAccess;
 
 //Setup our Main Window
 MainWindow *mainWindowPointer;
+mAllThreads _VideoThread;
+
+void updateOverlay()
+{
+    if (mainWindowPointer != NULL)
+        mainWindowPointer->updateArrayOverlay();
+}
 
 void logConsole(QString temp)
 {
@@ -59,6 +66,7 @@ void selectCamera(int cam) {
 void openCamera() {
     //clear our old video input
     qDebug() << "Opening camera " << cameraNumber;
+    logConsole(QString("Initializing Camera Interface..."));
     _PixelAccess.lock();
     if (videoInput.isOpened()) videoInput.release();
 
@@ -68,6 +76,7 @@ void openCamera() {
     videoInput.open(cameraNumber);
     if(videoInput.isOpened() == false) {
         qWarning("Unable to open device!");
+        logConsole(QString("Unable to open device!"));
     }
     videoInput.set(CV_CAP_PROP_FRAME_WIDTH, cameraWidth);
     videoInput.set(CV_CAP_PROP_FRAME_HEIGHT, cameraHeight);
@@ -102,6 +111,10 @@ void setResolution(int index){
         cameraWidth = 640;
         cameraHeight = 360;
     }
+    _VideoThread.cameraW = cameraWidth;
+    _VideoThread.cameraH = cameraHeight;
+    mainWindowPointer->cameraW = cameraWidth;
+    mainWindowPointer->cameraH = cameraHeight;
 }
 
 void setFPS(int index){
@@ -117,7 +130,10 @@ void setFPS(int index){
         cameraFPS = 5;
     } else if (index == 51){
         cameraFPS = 1;
+        _VideoThread.cameraFPS = 1;
     }
+    _VideoThread.cameraFPS = cameraFPS;
+    mainWindowPointer->cameraFPS = cameraFPS;
 }
 
 int main(int argc, char *argv[])
@@ -163,6 +179,7 @@ int main(int argc, char *argv[])
     _VideoThread.cameraObject = &videoInput;
     _VideoThread.globalRawImage = rawVideoInput;
     _VideoThread.globalProcessedImage = processedVideoInput;
+    _VideoThread.cameraFPS = 25;
 
     _UIThread.parentWindow = &windowHome;
     _UIThread.globalRawImage = rawVideoInput;
@@ -178,9 +195,18 @@ int main(int argc, char *argv[])
     windowHome.show();
 
     //Let's do some test initialization
-    if (MPanel::addPanel(0,0)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(61,61)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(60,61)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(61,59)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(62,59)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(63,59)) qDebug() << "Added panel!";
+    //MPanel::getPanelAtLocation(63,59)->setState(DISPLAY_ERROR);
+    if (MPanel::addPanel(59,61)) qDebug() << "Added panel!";
+    //MPanel::getPanelAtLocation(59,61)->setState(DISPLAY_ERROR);
+    if (MPanel::addPanel(61,60)) qDebug() << "Added panel!";
+    if (MPanel::addPanel(59,62)) qDebug() << "Added panel!";
 
-    if (MPanel::panelExistsAt(0,1)) qDebug() << "Found Panel!";
+    if (MPanel::panelExistsAt(61,61)) qDebug() << "Found Panel!";
         else qDebug() << "Did not find Panel!";
 
     //Let's get the ball rolling...

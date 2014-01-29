@@ -50,12 +50,12 @@ public:
     void setUniverse(int universe);
     unsigned short int getUniverse();
 
-    static unsigned short int arrayWidth;
-    static unsigned short int arrayHeight;
-    static unsigned short int boundLeft;
-    static unsigned short int boundTop;
-    static unsigned short int boundRight;
-    static unsigned short int boundBottom;
+    static unsigned int arrayWidth;
+    static unsigned int arrayHeight;
+    static unsigned int boundLeft;
+    static unsigned int boundTop;
+    static unsigned int boundRight;
+    static unsigned int boundBottom;
 
 
     //Static functions for adding new panels to our array
@@ -63,13 +63,14 @@ public:
     static bool deletePanel(int xpos, int ypos);
     static bool panelExistsAt(int xpos, int ypos);
     static MPanel* getPanelAtLocation(int xpos, int ypos);
+
     //Map Tools
-    static unsigned short int getArrayWidth();
-    static unsigned short int getArrayHeight();
-    static unsigned short int getArrayBoundLeft();
-    static unsigned short int getArrayBoundTop();
-    static unsigned short int getArrayBoundRight();
-    static unsigned short int getArrayBoundBottom();
+    static unsigned int getArrayWidth();
+    static unsigned int getArrayHeight();
+    static unsigned int getArrayBoundLeft();
+    static unsigned int getArrayBoundTop();
+    static unsigned int getArrayBoundRight();
+    static unsigned int getArrayBoundBottom();
     static void refreshLocalArrayMap();
 
 signals:

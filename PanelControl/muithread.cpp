@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QThread>
+#include "main.h"
+#include "mpanel.h"
 
 mUIThread::mUIThread(QMutex *pixel)
 {
@@ -16,6 +18,13 @@ void mUIThread::run()
 
     while (!shutdown) {
         this->pixelMutex->lock();
+            //update our panel UI
+            MPanel::refreshLocalArrayMap();
+
+            //perform our redraw operation
+            updateOverlay();
+
+            //copy our video image in the BG
             if (globalRawImage.data()->isNull() == false && parentWindow->isDisplayingVideo == true) {
                 QImage temp = *globalRawImage.data();
                 this->parentWindow->updateRawVideo(temp);

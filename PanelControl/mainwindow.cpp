@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QEvent>
+#include <QPainter>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -20,6 +21,12 @@ unsigned short int currentDropdownCamers = 0;
 unsigned short int curResIndex = 0;
 unsigned short int curFPSIndex = 0;
 
+unsigned int uiHandleLeft = 0;
+unsigned int uiHandleRight = 1279;
+unsigned int uiHandleBottom = 719;
+unsigned int uiHandleTop = 0;
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -27,11 +34,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     isDisplayingVideo = false;
 
+    cameraFPS = 25;
+    cameraW = 1920;
+    cameraH = 1080;
+
     this->ui->resBox->addItem("1920 x 1080");
     this->ui->resBox->addItem("1600 x 900");
     this->ui->resBox->addItem("1280 x 720");
     this->ui->resBox->addItem("960 x 540");
     this->ui->resBox->addItem("640 x 360");
+    this->ui->resBox->setCurrentIndex(0);
 
     this->ui->fpsBox->addItem("30 FPS");
     this->ui->fpsBox->addItem("25 FPS");
@@ -39,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->fpsBox->addItem("10 FPS");
     this->ui->fpsBox->addItem("5 FPS");
     this->ui->fpsBox->addItem("1 FPS");
+    this->ui->fpsBox->setCurrentIndex(1);
+
+    this->ui->panelOveryalLabel->setAttribute(Qt::WA_TranslucentBackground);
 
     //initialize our windows
     consoleWindow = new ConsoleWindow();
@@ -109,39 +124,96 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::updateRawVideo(QImage img) {
-    QImage temp = img.scaled(1280, 720, Qt::IgnoreAspectRatio, Qt::FastTransformation);
-    this->ui->rawLabel->setPixmap(QPixmap::fromImage(temp));
+void MainWindow::updateRawVideo(QImage img)
+{
+    if (this->cameraW != 1280) {
+        QImage temp = img.scaled(1280, 720, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+        this->ui->rawLabel->setPixmap(QPixmap::fromImage(temp));
+    } else {
+        this->ui->rawLabel->setPixmap(QPixmap::fromImage(img));
+    }
 }
 
-void MainWindow::handleEnable(){
+void MainWindow::updateArrayOverlay()
+{
+    QPixmap pixmap(1280,720);
+    pixmap.fill(QColor("transparent"));
+    QPainter painter(&pixmap);
+    //painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(QBrush(QColor(40, 255, 40, 128)));
+
+    //setup our blocks
+    unsigned int blockx, blocky;
+    //sweep thorugh each block
+    for (blockx = 0; blockx < MPanel::arrayWidth; blockx++)
+    {
+        for (blocky = 0; blocky < MPanel::arrayHeight; blocky++)
+        {
+            //Add a block if there's a panel
+            if (MPanel::panelExistsAt(MPanel::boundLeft + blockx,
+                                      MPanel::boundTop + blocky)) {
+                //so we have a panel!
+                //let's check if it's healthy
+                if (MPanel::getPanelAtLocation(MPanel::boundLeft + blockx,
+                                               MPanel::boundTop + blocky)->hasFault()) {
+                    //We're broken :(
+                    painter.setBrush(QBrush(QColor(255, 20, 20, 100)));
+                } else {
+                    //The panel is fine!
+                    painter.setBrush(QBrush(QColor(40, 255, 40, 100)));
+                }
+                //so we have our status, let's draw our rectangle
+                int pos_x, pos_y, pan_w, pan_h;
+
+                pan_w = (uiHandleRight - uiHandleLeft)/MPanel::arrayWidth;
+                pan_h = (uiHandleBottom - uiHandleTop)/MPanel::arrayHeight;
+
+                pos_x = uiHandleLeft + pan_w*blockx;
+                pos_y = uiHandleTop + pan_h*blocky;
+
+                painter.drawRect(pos_x, pos_y, pan_w, pan_h);
+            } //if not, we'll draw nothing
+        }
+    }
+
+    //update the UI
+    this->ui->panelOveryalLabel->setPixmap(pixmap);
+}
+
+void MainWindow::handleEnable()
+{
     logConsole(QString("Enabling video input..."));
     openCamera();
 }
 
-void MainWindow::handleDisable(){
+void MainWindow::handleDisable()
+{
     logConsole(QString("Disabling video input..."));
     closeCamera();
     this->ui->rawLabel->clear();
 }
 
-void MainWindow::handleUseDevice(){
+void MainWindow::handleUseDevice()
+{
     qDebug() << "Setting...";
     selectCamera(currentDropdownCamers);
 }
 
-void MainWindow::addCameraToSelector() {
+void MainWindow::addCameraToSelector()
+{
     //finding cameras n shit
     std::ostringstream camname;
     camname << "Camera Input Source #" <<cameraCount++;
     this->ui->cameraSelect->addItem(camname.str().c_str());
 }
 
-void MainWindow::handleDropDownCamSelect(int cam) {
+void MainWindow::handleDropDownCamSelect(int cam)
+{
     currentDropdownCamers=cam;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MainWindow::closeEvent(QCloseEvent *event)
+{
     //kill our windows
     qDebug() << "Closing child windows...";
     consoleWindow->destroy = true;
@@ -182,17 +254,45 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     QMainWindow::closeEvent(event);
 }
 
-void MainWindow:: handleResButton(){
+void MainWindow:: handleResButton()
+{
     setResolution(curResIndex);
     openCamera();
 }
-void MainWindow::handleFPSButton(){
+void MainWindow::handleFPSButton()
+{
     setFPS(curFPSIndex);
     openCamera();
 }
-void MainWindow::handleBoxRes(int index){
+void MainWindow::handleBoxRes(int index)
+{
     curResIndex = index;
 }
-void MainWindow::handleBoxFPS(int index){
+void MainWindow::handleBoxFPS(int index)
+{
     curFPSIndex = index;
+}
+
+void MainWindow::on_sliderX_valueChanged(int value)
+{
+    uiHandleLeft = value;
+    this->ui->sliderW->setMinimum(uiHandleLeft+99);
+}
+
+void MainWindow::on_sliderY_valueChanged(int value)
+{
+    uiHandleTop = value;
+    this->ui->sliderH->setMinimum(uiHandleTop+99);
+}
+
+void MainWindow::on_sliderW_valueChanged(int value)
+{
+    uiHandleRight = value;
+    this->ui->sliderX->setMaximum(uiHandleRight-99);
+}
+
+void MainWindow::on_sliderH_valueChanged(int value)
+{
+    uiHandleBottom = value;
+    this->ui->sliderY->setMaximum(uiHandleBottom-99);
 }

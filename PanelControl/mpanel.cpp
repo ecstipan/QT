@@ -3,15 +3,15 @@
 #include "mpanel.h"
 #include "main.h"
 
-extern MPanel *_globalPanels[121][121];
+extern MPanel *_globalPanels[122][122];
 
 //static declarations
-unsigned short int MPanel::arrayWidth = 0;
-unsigned short int MPanel::arrayHeight = 0;
-unsigned short int MPanel::boundLeft = 61;
-unsigned short int MPanel::boundTop = 61;
-unsigned short int MPanel::boundRight = 61;
-unsigned short int MPanel::boundBottom = 61;
+unsigned int MPanel::arrayWidth = 0;
+unsigned int MPanel::arrayHeight = 0;
+unsigned int MPanel::boundLeft = 61;
+unsigned int MPanel::boundTop = 61;
+unsigned int MPanel::boundRight = 61;
+unsigned int MPanel::boundBottom = 61;
 
 MPanel::MPanel()
 {
@@ -330,34 +330,68 @@ MPanel* MPanel::getPanelAtLocation(int xpos, int ypos)
     return NULL;
 }
 
-unsigned short int MPanel::getArrayWidth()
+unsigned int MPanel::getArrayWidth()
 {
-    return getArrayBoundRight() - getArrayBoundLeft() + 1;
+    int width = getArrayBoundRight() - getArrayBoundLeft() + 1;
+    return (width > 0) ? width : 0;
 }
 
-unsigned short int MPanel::getArrayHeight()
+unsigned int MPanel::getArrayHeight()
 {
-    return getArrayBoundBottom() - getArrayBoundTop() + 1;
+    int height = getArrayBoundBottom() - getArrayBoundTop() + 1;
+    return (height > 0) ? height : 0;
 }
 
-unsigned short int MPanel::getArrayBoundLeft()
+unsigned int MPanel::getArrayBoundLeft()
 {
+    unsigned int lBound = 0;
+    int curx, cury;
+    for(curx = 0; curx < 121; curx++){
+        for(cury = 0; cury < 121; cury++){
+            lBound = curx;
+            if(MPanel::panelExistsAt(curx, cury)) return lBound;
+        }
+    }
+    return 121;
+}
+
+unsigned int MPanel::getArrayBoundTop()
+{
+    unsigned int tBound = 0;
+    int curx, cury;
+    for(cury = 0; cury < 121; cury++){
+        for(curx = 0; curx < 121; curx++){
+            tBound = cury;
+            if(MPanel::panelExistsAt(curx, cury)) return tBound;
+        }
+    }
+    return 121;
+}
+
+unsigned int MPanel::getArrayBoundRight()
+{
+    unsigned int rBound = 121;
+    int curx, cury;
+    for(curx = 121; curx > 0; curx--){
+        for(cury = 0; cury < 121; cury++){
+            rBound = curx;
+            if(MPanel::panelExistsAt(curx, cury)) return rBound;
+        }
+    }
     return 0;
 }
 
-unsigned short int MPanel::getArrayBoundTop()
+unsigned int MPanel::getArrayBoundBottom()
 {
+    unsigned int bBound = 0;
+    int curx, cury;
+    for(cury = 121; cury > 0; cury--){
+        for(curx = 121; curx > 0; curx--){
+            bBound = cury;
+            if(MPanel::panelExistsAt(curx, cury)) return bBound;
+        }
+    }
     return 0;
-}
-
-unsigned short int MPanel::getArrayBoundRight()
-{
-    return 0;
-}
-
-unsigned short int MPanel::getArrayBoundBottom()
-{
-    return  0;
 }
 
 void MPanel::refreshLocalArrayMap()

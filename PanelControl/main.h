@@ -8,6 +8,7 @@ void closeCamera();
 void selectCamera(int);
 void setFPS(int);
 void setResolution(int);
+void updateOverlay();
 
 #endif // MAIN_H
 

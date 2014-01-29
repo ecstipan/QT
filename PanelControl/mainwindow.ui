@@ -689,7 +689,157 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </rect>
     </property>
     <property name="title">
-     <string>Live Status</string>
+     <string>Video Mapping Settings</string>
+    </property>
+    <widget class="QSlider" name="sliderX">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>24</y>
+       <width>256</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1179</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QSlider" name="sliderY">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>60</y>
+       <width>256</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>619</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QSlider" name="sliderW">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>24</y>
+       <width>288</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>99</number>
+     </property>
+     <property name="maximum">
+      <number>1279</number>
+     </property>
+     <property name="value">
+      <number>1279</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QSlider" name="sliderH">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>60</y>
+       <width>288</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>99</number>
+     </property>
+     <property name="maximum">
+      <number>719</number>
+     </property>
+     <property name="value">
+      <number>719</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>16</x>
+       <y>24</y>
+       <width>40</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X Start</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>16</x>
+       <y>60</y>
+       <width>40</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y Start</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>24</y>
+       <width>37</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X End</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>60</y>
+       <width>37</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y End</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="panelOveryalLabel">
+    <property name="geometry">
+     <rect>
+      <x>4</x>
+      <y>4</y>
+      <width>1280</width>
+      <height>720</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>CrossCursor</cursorShape>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

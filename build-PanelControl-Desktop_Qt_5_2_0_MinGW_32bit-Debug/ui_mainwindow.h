@@ -21,6 +21,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -58,6 +59,15 @@ public:
     QLabel *label_2;
     QLabel *label_3;
     QGroupBox *groupBox_3;
+    QSlider *sliderX;
+    QSlider *sliderY;
+    QSlider *sliderW;
+    QSlider *sliderH;
+    QLabel *label_4;
+    QLabel *label_5;
+    QLabel *label_6;
+    QLabel *label_7;
+    QLabel *panelOveryalLabel;
     QMenuBar *menuBar;
     QMenu *menuPanelControl;
     QMenu *menuNetwork;
@@ -624,6 +634,48 @@ public:
         groupBox_3 = new QGroupBox(centralWidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
         groupBox_3->setGeometry(QRect(599, 728, 685, 89));
+        sliderX = new QSlider(groupBox_3);
+        sliderX->setObjectName(QStringLiteral("sliderX"));
+        sliderX->setGeometry(QRect(60, 24, 256, 19));
+        sliderX->setMaximum(1179);
+        sliderX->setOrientation(Qt::Horizontal);
+        sliderY = new QSlider(groupBox_3);
+        sliderY->setObjectName(QStringLiteral("sliderY"));
+        sliderY->setGeometry(QRect(60, 60, 256, 19));
+        sliderY->setMaximum(619);
+        sliderY->setOrientation(Qt::Horizontal);
+        sliderW = new QSlider(groupBox_3);
+        sliderW->setObjectName(QStringLiteral("sliderW"));
+        sliderW->setGeometry(QRect(380, 24, 288, 19));
+        sliderW->setMinimum(99);
+        sliderW->setMaximum(1279);
+        sliderW->setValue(1279);
+        sliderW->setOrientation(Qt::Horizontal);
+        sliderH = new QSlider(groupBox_3);
+        sliderH->setObjectName(QStringLiteral("sliderH"));
+        sliderH->setGeometry(QRect(380, 60, 288, 19));
+        sliderH->setMinimum(99);
+        sliderH->setMaximum(719);
+        sliderH->setValue(719);
+        sliderH->setOrientation(Qt::Horizontal);
+        label_4 = new QLabel(groupBox_3);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(16, 24, 40, 16));
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(16, 60, 40, 16));
+        label_6 = new QLabel(groupBox_3);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setGeometry(QRect(340, 24, 37, 16));
+        label_7 = new QLabel(groupBox_3);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setGeometry(QRect(340, 60, 37, 16));
+        panelOveryalLabel = new QLabel(centralWidget);
+        panelOveryalLabel->setObjectName(QStringLiteral("panelOveryalLabel"));
+        panelOveryalLabel->setGeometry(QRect(4, 4, 1280, 720));
+        panelOveryalLabel->setCursor(QCursor(Qt::CrossCursor));
+        panelOveryalLabel->setMouseTracking(true);
+        panelOveryalLabel->setStyleSheet(QStringLiteral(""));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -701,7 +753,12 @@ public:
         fpsButton->setText(QApplication::translate("MainWindow", "Set Frame Rate", 0));
         label_2->setText(QApplication::translate("MainWindow", "Capture Resolution", 0));
         label_3->setText(QApplication::translate("MainWindow", "Capture Frame Rate", 0));
-        groupBox_3->setTitle(QApplication::translate("MainWindow", "Live Status", 0));
+        groupBox_3->setTitle(QApplication::translate("MainWindow", "Video Mapping Settings", 0));
+        label_4->setText(QApplication::translate("MainWindow", "X Start", 0));
+        label_5->setText(QApplication::translate("MainWindow", "Y Start", 0));
+        label_6->setText(QApplication::translate("MainWindow", "X End", 0));
+        label_7->setText(QApplication::translate("MainWindow", "Y End", 0));
+        panelOveryalLabel->setText(QString());
         menuPanelControl->setTitle(QApplication::translate("MainWindow", "PanelControl", 0));
         menuNetwork->setTitle(QApplication::translate("MainWindow", "Network", 0));
         menuVideo->setTitle(QApplication::translate("MainWindow", "Video", 0));

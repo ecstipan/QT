@@ -14,6 +14,9 @@ class mAllThreads : public QThread
 public:
     explicit mAllThreads(QObject *parent = 0);
     bool shutdown;
+    unsigned int cameraFPS;
+    unsigned int cameraW;
+    unsigned int cameraH;
 signals:
 
 public slots:

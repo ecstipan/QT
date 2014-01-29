@@ -1,6 +1,7 @@
 #include "mnetworkthread.h"
 #include <QtCore>
 #include <QDebug>
+#include <QUdpSocket>
 
 mNetworkThread::mNetworkThread(QMutex *pixel)
 {

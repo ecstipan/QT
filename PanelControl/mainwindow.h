@@ -28,6 +28,11 @@ public:
     void addCameraToSelector();
     QMutex *mutex;
     void addConsoleLogEvent(QString stuff);
+    void updateArrayOverlay();
+
+    unsigned int cameraFPS;
+    unsigned int cameraW;
+    unsigned int cameraH;
 private:
     ConsoleWindow *consoleWindow;
     Ui::MainWindow *ui;
@@ -44,6 +49,10 @@ private slots:
     void handleFPSButton();
     void handleBoxRes(int index);
     void handleBoxFPS(int index);
+    void on_sliderX_valueChanged(int value);
+    void on_sliderY_valueChanged(int value);
+    void on_sliderW_valueChanged(int value);
+    void on_sliderH_valueChanged(int value);
 };
 
 #endif // MAINWINDOW_H

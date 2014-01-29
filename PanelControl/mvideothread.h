@@ -17,6 +17,10 @@ public:
     QSharedPointer<QImage> globalRawImage;
     QSharedPointer<QImage> globalProcessedImage;
     bool shutdown;
+    unsigned int cameraFPS;
+    unsigned int cameraW;
+    unsigned int cameraH;
+
     QMutex* pixelMutex;
     mVideoThread(QMutex *pixel);
     void run();

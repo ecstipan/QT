@@ -167,6 +167,7 @@ Makefile: ../PanelControl/PanelControl.pro D:/QtFree/5.2.0/mingw48_32/mkspecs/wi
 		D:/QtFree/5.2.0/mingw48_32/mkspecs/features/lex.prf \
 		../PanelControl/PanelControl.pro \
 		D:/QtFree/5.2.0/mingw48_32/lib/Qt5Widgets.prl \
+		D:/QtFree/5.2.0/mingw48_32/lib/Qt5Network.prl \
 		D:/QtFree/5.2.0/mingw48_32/lib/Qt5Gui.prl \
 		D:/QtFree/5.2.0/mingw48_32/lib/Qt5Core.prl
 	$(QMAKE) -spec win32-g++ CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug -o Makefile ..\PanelControl\PanelControl.pro
@@ -278,6 +279,7 @@ D:\QtFree\5.2.0\mingw48_32\mkspecs\features\yacc.prf:
 D:\QtFree\5.2.0\mingw48_32\mkspecs\features\lex.prf:
 ..\PanelControl\PanelControl.pro:
 D:/QtFree/5.2.0/mingw48_32/lib/Qt5Widgets.prl:
+D:/QtFree/5.2.0/mingw48_32/lib/Qt5Network.prl:
 D:/QtFree/5.2.0/mingw48_32/lib/Qt5Gui.prl:
 D:/QtFree/5.2.0/mingw48_32/lib/Qt5Core.prl:
 qmake: FORCE
