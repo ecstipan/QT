@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
     if (MPanel::addPanel(63,59)) qDebug() << "Added panel!";
     //MPanel::getPanelAtLocation(63,59)->setState(DISPLAY_ERROR);
     if (MPanel::addPanel(59,61)) qDebug() << "Added panel!";
-    //MPanel::getPanelAtLocation(59,61)->setState(DISPLAY_ERROR);
+    MPanel::getPanelAtLocation(59,61)->setState(DISPLAY_ERROR);
     if (MPanel::addPanel(61,60)) qDebug() << "Added panel!";
     if (MPanel::addPanel(59,62)) qDebug() << "Added panel!";
 

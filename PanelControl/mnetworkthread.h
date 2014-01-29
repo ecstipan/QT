@@ -16,7 +16,7 @@ public:
     QMutex* pixelMutex;
     mNetworkThread(QMutex* pixel);
     void run();
-    void WriteData(QHostAddress, );
+    //void WriteData(QHostAddress, );
 
 public slots:
     void readReady();
