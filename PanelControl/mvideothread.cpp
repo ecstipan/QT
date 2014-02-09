@@ -78,9 +78,7 @@ void mVideoThread::run()
         }
 
         //perform our redraw operation
-        MPanel::refreshLocalArrayMap();
         updateOverlay();
-
 
         //Send our frame to the panels
         int inputHeight = 720;
@@ -130,14 +128,16 @@ void mVideoThread::run()
                     header.append((char)1); //For Video frame data
                     header.append((char)(0)); //This is the first 16x16 chunk
 
+                    unsigned int i = 0;
+
                     //get our byte frame
                     for ( int row = 0; row < scaled.height(); row++ )
                         for ( int col = 0; col < scaled.width(); col++ )
                         {
                             QColor pixel(scaled.pixel(col,row));
-                            test[scaled.height()*row + col + 0] = (char)pixel.red();
-                            test[scaled.height()*row + col + 1] = (char)pixel.green();
-                            test[scaled.height()*row + col + 2] = (char)pixel.blue();
+                            test[i++] = (char)pixel.red();
+                            test[i++] = (char)pixel.green();
+                            test[i++] = (char)pixel.blue();
                         }
 
                     videoFrame = QByteArray(test, scaled.byteCount());

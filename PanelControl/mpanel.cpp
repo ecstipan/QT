@@ -406,6 +406,24 @@ void MPanel::refreshLocalArrayMap()
     //do other things as necessary
 }
 
+unsigned int MPanel::getArrayCount()
+{
+    unsigned int panelCount = 0;
+    unsigned int blockx, blocky;
+    //sweep thorugh each block
+    for (blockx = 0; blockx < MPanel::arrayWidth; blockx++)
+    {
+        for (blocky = 0; blocky < MPanel::arrayHeight; blocky++)
+        {
+            //Add a block if there's a panel
+            if (MPanel::panelExistsAt(MPanel::boundLeft + blockx,
+                                      MPanel::boundTop + blocky))
+                panelCount++;
+        }
+    }
+    return panelCount;
+}
+
 MPanel::~MPanel()
 {
 

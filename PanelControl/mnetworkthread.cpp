@@ -15,8 +15,10 @@ void mNetworkThread::run()
     shutdown = false;
     while (!shutdown) {
         this->pixelMutex->lock();
-        //process video data
         //perform any other panel handling stuff
+        MPanel::refreshLocalArrayMap();
+        //see if we should wait to rebroadcast
+        if (MPanel::getArrayCount() == 0) beginReaddressProcess();
 
         //check for timeouts
 

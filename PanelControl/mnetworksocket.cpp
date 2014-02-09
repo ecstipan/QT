@@ -22,10 +22,11 @@ MnetworkSocket::MnetworkSocket(QObject *parent) :
               if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol )
                  logConsole(QString("Interface found on ").append(( list[nIter].toString())));
 
-                 if (list[nIter].toString().contains("130.215", Qt::CaseInsensitive))
+                 if (list[nIter].toString().contains("130.215.248", Qt::CaseInsensitive))
                  {
                      listenAddress = list[nIter];
                      logConsole(QString("Listening on ").append(( list[nIter].toString())));
+                     break;
                  }
 
       }
@@ -50,8 +51,8 @@ void MnetworkSocket::reAddress(const char *addr)
     QByteArray header(4, 255);//source address
     header.append((char)3); //For Video frame data
     header.append((char)1); //This is the first 16x16 chunk
-    if (socket->writeDatagram(header, QHostAddress(addr), 27015))
-       logConsole(QString("Starting Panel Readdress Process..."));
+    if (!socket->writeDatagram(header, QHostAddress(addr), 27015))
+       logConsole(QString("Failed Panel Readdress Process!"));
 }
 
 void MnetworkSocket::readyRead()

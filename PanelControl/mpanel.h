@@ -72,6 +72,7 @@ public:
     static unsigned int getArrayBoundRight();
     static unsigned int getArrayBoundBottom();
     static void refreshLocalArrayMap();
+    static unsigned int getArrayCount();
 
 signals:
 

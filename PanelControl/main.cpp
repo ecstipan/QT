@@ -162,7 +162,9 @@ void startAddress(const char *addr)
 
 void beginReaddressProcess()
 {
+    logConsole(QString("Attempting to find panels... "));
     startAddress("130.215.248.52");
+    startAddress("130.215.248.255");
 }
 
 void setOffsetXStart(int x)
