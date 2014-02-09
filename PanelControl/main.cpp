@@ -30,6 +30,7 @@
 #include <QSharedData>
 #include <QSharedDataPointer>
 #include <QApplication>
+#include "mnetworksocket.h"
 
 //Define things for globally allocated memory
 MPanel *_globalPanels[122][122];
@@ -39,12 +40,22 @@ unsigned int cameraWidth = 1920;
 unsigned int cameraHeight = 1080;
 unsigned int cameraFPS = 25;
 
+int uiHandleLeft = 0;
+int uiHandleRight = 1079;
+int uiHandleBottom = 719;
+int uiHandleTop = 0;
+
+int testPattern = 0;
+
 //setup voletile shared memory
 QMutex _PixelAccess;
 
 //Setup our Main Window
 MainWindow *mainWindowPointer;
 mAllThreads _VideoThread;
+
+//initialize our global network object
+MnetworkSocket *UDPsocket;
 
 void updateOverlay()
 {
@@ -83,13 +94,14 @@ void openCamera() {
     videoInput.set(CV_CAP_PROP_FPS, cameraFPS);
 
     mainWindowPointer->isDisplayingVideo = true;
+    testPattern = 0;
     _PixelAccess.unlock();
 }
 
 void closeCamera(){
     _PixelAccess.lock();
     if (videoInput.isOpened()) videoInput.release();
-    mainWindowPointer->isDisplayingVideo = false;
+    //mainWindowPointer->isDisplayingVideo = false;
     _PixelAccess.unlock();
 }
 
@@ -136,6 +148,54 @@ void setFPS(int index){
     mainWindowPointer->cameraFPS = cameraFPS;
 }
 
+void sendVideoFrame(const char *addr, QByteArray data)
+{
+    if (UDPsocket !=  NULL)
+        UDPsocket->SendVideo(addr, data);
+}
+
+void startAddress(const char *addr)
+{
+    if (UDPsocket !=  NULL)
+        UDPsocket->reAddress(addr);
+}
+
+void beginReaddressProcess()
+{
+    startAddress("130.215.248.52");
+}
+
+void setOffsetXStart(int x)
+{
+     uiHandleLeft = x;
+}
+
+void setOffsetXEnd(int x)
+{
+    uiHandleRight = x;
+}
+
+void setOffsetYStart(int x)
+{
+    uiHandleTop = x;
+}
+
+void setOffsetYEnd(int x)
+{
+    uiHandleBottom = x;
+}
+
+void forceGlobalAddress()
+{
+
+}
+
+void setTestPattern(int t)
+{
+    testPattern = t;
+    if (t != 0) closeCamera();
+}
+
 int main(int argc, char *argv[])
 {
     QApplication::setStyle("plastique");
@@ -144,7 +204,7 @@ int main(int argc, char *argv[])
     MainWindow windowHome;
     mainWindowPointer = &windowHome;
 
-    logConsole(QString("Initializing Camera Interface..."));
+    UDPsocket = new MnetworkSocket();
 
     int i;
     for (i=0; i<10; i++) {
@@ -161,18 +221,23 @@ int main(int argc, char *argv[])
     QSharedPointer<QImage> processedVideoInput = QSharedPointer<QImage>(new QImage);
 
     //Initialize Threads
-    mVideoThread    _VideoThread(&_PixelAccess);           //Handles Video Processing
-                                            //Dumps data over UDP
+    mVideoThread    _VideoThread(&_PixelAccess);       //Handles Video Processing
+    _VideoThread.uiHandleLeft = &uiHandleLeft;         //Handles Video Processing
+    _VideoThread.uiHandleRight = &uiHandleRight;       //Handles Video Processing
+    _VideoThread.uiHandleTop = &uiHandleTop;           //Handles Video Processing
+    _VideoThread.uiHandleBottom = &uiHandleBottom;         //Handles Video Processing
+    _VideoThread.testPattern = &testPattern;
 
+    //Dumps data over UDP
     mNetworkThread  _NetworkUpdateThread(&_PixelAccess);   //Handles Panel and Array Mapping
 
-    mUIThread       _UIThread(&_PixelAccess);              //Handles UI and Lower Priority Tasks
+    //mUIThread       _UIThread(&_PixelAccess);              //Handles UI and Lower Priority Tasks
 
 
     //Assign Pointers
     windowHome.thread1 = &_VideoThread;
     windowHome.thread2 = &_NetworkUpdateThread;
-    windowHome.thread3 = &_UIThread;
+    //windowHome.thread3 = &_UIThread;
     windowHome.mutex = &_PixelAccess;
 
     //Initialize Other things
@@ -180,34 +245,19 @@ int main(int argc, char *argv[])
     _VideoThread.globalRawImage = rawVideoInput;
     _VideoThread.globalProcessedImage = processedVideoInput;
     _VideoThread.cameraFPS = 25;
-
-    _UIThread.parentWindow = &windowHome;
-    _UIThread.globalRawImage = rawVideoInput;
-    _UIThread.globalProcessedImage = processedVideoInput;
+    _VideoThread.parentWindow = &windowHome;
 
     logConsole(QString("Initializing threads... "));
     //Start our Threads
     _VideoThread.start(QThread::NormalPriority);
     _NetworkUpdateThread.start(QThread::NormalPriority);
-    _UIThread.start(QThread::LowPriority);
+    //_UIThread.start(QThread::LowPriority);
 
     //Finally ready to display something
     windowHome.show();
 
     //Let's do some test initialization
-    if (MPanel::addPanel(61,61)) qDebug() << "Added panel!";
-    if (MPanel::addPanel(60,61)) qDebug() << "Added panel!";
-    if (MPanel::addPanel(61,59)) qDebug() << "Added panel!";
-    if (MPanel::addPanel(62,59)) qDebug() << "Added panel!";
-    if (MPanel::addPanel(63,59)) qDebug() << "Added panel!";
-    //MPanel::getPanelAtLocation(63,59)->setState(DISPLAY_ERROR);
-    if (MPanel::addPanel(59,61)) qDebug() << "Added panel!";
-    MPanel::getPanelAtLocation(59,61)->setState(DISPLAY_ERROR);
-    if (MPanel::addPanel(61,60)) qDebug() << "Added panel!";
-    if (MPanel::addPanel(59,62)) qDebug() << "Added panel!";
-
-    if (MPanel::panelExistsAt(61,61)) qDebug() << "Found Panel!";
-        else qDebug() << "Did not find Panel!";
+    //beginReaddressProcess();
 
     //Let's get the ball rolling...
     return a.exec();

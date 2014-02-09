@@ -1,3 +1,4 @@
+#include "main.h"
 #include "mnetworkthread.h"
 #include <QtCore>
 #include <QDebug>
@@ -13,8 +14,14 @@ void mNetworkThread::run()
 {
     shutdown = false;
     while (!shutdown) {
-        this->msleep(300);
-        QThread::msleep(300);
+        this->pixelMutex->lock();
+        //process video data
+        //perform any other panel handling stuff
+
+        //check for timeouts
+
+        this->pixelMutex->unlock();
+        msleep(1000);
     }
     quit();
 }

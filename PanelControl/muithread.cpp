@@ -25,7 +25,7 @@ void mUIThread::run()
             updateOverlay();
 
             //copy our video image in the BG
-            if (globalRawImage.data()->isNull() == false && parentWindow->isDisplayingVideo == true) {
+            if (globalRawImage.data()->isNull() == false) {
                 QImage temp = *globalRawImage.data();
                 this->parentWindow->updateRawVideo(temp);
                 //qDebug() << "Updating Image";

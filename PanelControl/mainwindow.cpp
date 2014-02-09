@@ -15,17 +15,12 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "mnetworksocket.h"
 
 unsigned short int cameraCount = 0;
 unsigned short int currentDropdownCamers = 0;
 unsigned short int curResIndex = 0;
 unsigned short int curFPSIndex = 0;
-
-unsigned int uiHandleLeft = 0;
-unsigned int uiHandleRight = 1279;
-unsigned int uiHandleBottom = 719;
-unsigned int uiHandleTop = 0;
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,6 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     cameraFPS = 25;
     cameraW = 1920;
     cameraH = 1080;
+    this->uiHandleLeft = 0;
+    this->uiHandleRight = 1279;
+    this->uiHandleBottom = 719;
+    this->uiHandleTop = 0;
 
     this->ui->resBox->addItem("1920 x 1080");
     this->ui->resBox->addItem("1600 x 900");
@@ -70,11 +69,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionDebug_Console, SIGNAL(triggered()), this, SLOT(openConsoleWindow()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(closeProgram()));
+    connect(ui->actionReset_Array, SIGNAL(triggered()), this, SLOT(resetArray()));
+
+
+    connect(ui->actionColor_Space_Test, SIGNAL(triggered()), this, SLOT(setTestPattern1()));
+    connect(ui->actionContrast_Test, SIGNAL(triggered()), this, SLOT(setTestPattern2()));
+    connect(ui->actionScaling_AA_Test, SIGNAL(triggered()), this, SLOT(setTestPattern3()));
+    connect(ui->actionNone, SIGNAL(triggered()), this, SLOT(setTestPattern0()));
 }
 
 void MainWindow::closeProgram()
 {
     this->close();
+}
+
+void MainWindow::resetArray()
+{
+    beginReaddressProcess();
 }
 
 void MainWindow::openConsoleWindow()
@@ -85,6 +96,30 @@ void MainWindow::openConsoleWindow()
 void MainWindow::addConsoleLogEvent(QString stuff)
 {
     this->consoleWindow->addLog(stuff);
+}
+
+void MainWindow::setTestPattern1()
+{
+    setTestPattern(1);
+    isDisplayingVideo = true;
+}
+
+void MainWindow::setTestPattern2()
+{
+    setTestPattern(2);
+    isDisplayingVideo = true;
+}
+
+void MainWindow::setTestPattern3()
+{
+    setTestPattern(3);
+    isDisplayingVideo = true;
+}
+
+void MainWindow::setTestPattern0()
+{
+    setTestPattern(0);
+    isDisplayingVideo = true;
 }
 
 MainWindow::~MainWindow()
@@ -111,7 +146,7 @@ MainWindow::~MainWindow()
           thread2->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
     }
-    if (thread3) {
+    /* if (thread3) {
         qDebug() << "Stopping UI Thread...";
         thread3->shutdown=true;
         if(!thread3->wait(1000)) //Wait until it actually has terminated (max. 5 sec)
@@ -120,7 +155,7 @@ MainWindow::~MainWindow()
           thread3->terminate(); //Thread didn't exit in time, probably deadlocked, terminate it!
           thread3->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
-    }
+    }*/
     delete ui;
 }
 
@@ -240,7 +275,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
           thread2->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
     }
-    if (thread3) {
+    /* if (thread3) {
         qDebug() << "Stopping UI Thread...";
         thread3->shutdown=true;
         if(!thread3->wait(1000)) //Wait until it actually has terminated (max. 5 sec)
@@ -249,7 +284,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
           thread3->terminate(); //Thread didn't exit in time, probably deadlocked, terminate it!
           thread3->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
-    }
+    } */
     qDebug() << "THreads stopped.  Finishing closing...";
     QMainWindow::closeEvent(event);
 }
@@ -257,12 +292,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow:: handleResButton()
 {
     setResolution(curResIndex);
-    openCamera();
+    //openCamera();
 }
 void MainWindow::handleFPSButton()
 {
     setFPS(curFPSIndex);
-    openCamera();
+    //openCamera();
 }
 void MainWindow::handleBoxRes(int index)
 {
@@ -276,23 +311,27 @@ void MainWindow::handleBoxFPS(int index)
 void MainWindow::on_sliderX_valueChanged(int value)
 {
     uiHandleLeft = value;
+    setOffsetXStart(value);
     this->ui->sliderW->setMinimum(uiHandleLeft+99);
 }
 
 void MainWindow::on_sliderY_valueChanged(int value)
 {
     uiHandleTop = value;
+    setOffsetYStart(value);
     this->ui->sliderH->setMinimum(uiHandleTop+99);
 }
 
 void MainWindow::on_sliderW_valueChanged(int value)
 {
     uiHandleRight = value;
+    setOffsetXEnd(value);
     this->ui->sliderX->setMaximum(uiHandleRight-99);
 }
 
 void MainWindow::on_sliderH_valueChanged(int value)
 {
     uiHandleBottom = value;
+    setOffsetYEnd(value);
     this->ui->sliderY->setMaximum(uiHandleBottom-99);
 }

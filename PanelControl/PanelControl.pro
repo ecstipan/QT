@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     mnetworkthread.cpp \
     muithread.cpp \
     mallthreads.cpp \
-    consolewindow.cpp
+    consolewindow.cpp \
+    mnetworksocket.cpp
 
 HEADERS  += mainwindow.h \
     mpanel.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     muithread.h \
     mallthreads.h \
     main.h \
-    consolewindow.h
+    consolewindow.h \
+    mnetworksocket.h
 
 FORMS    += mainwindow.ui \
     consolewindow.ui
@@ -42,7 +44,10 @@ LIBS += -LD:\\OpenCV\\build\\bin \
     libopencv_highgui247 \
     libopencv_imgproc247 \
     libopencv_features2d247 \
-    libopencv_calib3d247 \
+    libopencv_calib3d247
 
 OTHER_FILES += \
     img.jpg
+OTHER_FILES += testa.bmp
+OTHER_FILES += testb.bmp
+OTHER_FILES += testc.bmp

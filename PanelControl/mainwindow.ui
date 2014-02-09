@@ -876,6 +876,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      <addaction name="actionColor_Space_Test"/>
      <addaction name="actionContrast_Test"/>
      <addaction name="actionScaling_AA_Test"/>
+     <addaction name="separator"/>
+     <addaction name="actionNone"/>
     </widget>
     <addaction name="actionVideo_Settings"/>
     <addaction name="separator"/>
@@ -977,6 +979,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <action name="actionImage_Adjustments">
    <property name="text">
     <string>Image Adjustments</string>
+   </property>
+  </action>
+  <action name="actionNone">
+   <property name="text">
+    <string>None</string>
    </property>
   </action>
  </widget>

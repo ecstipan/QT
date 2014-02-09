@@ -2,6 +2,7 @@
 #define CONSOLEWINDOW_H
 
 #include <QDialog>
+#include "mnetworksocket.h"
 
 namespace Ui {
 class ConsoleWindow;

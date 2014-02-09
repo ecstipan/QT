@@ -7,6 +7,10 @@ INPUT(
 ./release\mnetworkthread.o
 ./release\muithread.o
 ./release\mallthreads.o
+./release\consolewindow.o
+./release\mnetworksocket.o
 ./release\moc_mainwindow.o
 ./release\moc_mallthreads.o
+./release\moc_consolewindow.o
+./release\moc_mnetworksocket.o
 );

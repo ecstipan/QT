@@ -33,6 +33,11 @@ public:
     unsigned int cameraFPS;
     unsigned int cameraW;
     unsigned int cameraH;
+
+    unsigned int uiHandleLeft;
+    unsigned int uiHandleRight;
+    unsigned int uiHandleBottom;
+    unsigned int uiHandleTop;
 private:
     ConsoleWindow *consoleWindow;
     Ui::MainWindow *ui;
@@ -40,6 +45,7 @@ private:
 public slots:
     void openConsoleWindow();
 private slots:
+    void resetArray();
     void closeProgram();
     void handleEnable();
     void handleDisable();
@@ -53,6 +59,10 @@ private slots:
     void on_sliderY_valueChanged(int value);
     void on_sliderW_valueChanged(int value);
     void on_sliderH_valueChanged(int value);
+    void setTestPattern1();
+    void setTestPattern2();
+    void setTestPattern3();
+    void setTestPattern0();
 };
 
 #endif // MAINWINDOW_H

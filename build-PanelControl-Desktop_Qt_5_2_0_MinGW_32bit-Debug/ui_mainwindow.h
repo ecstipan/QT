@@ -43,6 +43,7 @@ public:
     QAction *actionContrast_Test;
     QAction *actionScaling_AA_Test;
     QAction *actionImage_Adjustments;
+    QAction *actionNone;
     QWidget *centralWidget;
     QLabel *rawLabel;
     QGroupBox *groupBox;
@@ -582,6 +583,8 @@ public:
         actionScaling_AA_Test->setObjectName(QStringLiteral("actionScaling_AA_Test"));
         actionImage_Adjustments = new QAction(MainWindow);
         actionImage_Adjustments->setObjectName(QStringLiteral("actionImage_Adjustments"));
+        actionNone = new QAction(MainWindow);
+        actionNone->setObjectName(QStringLiteral("actionNone"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         rawLabel = new QLabel(centralWidget);
@@ -713,6 +716,8 @@ public:
         menuTest_Patterns->addAction(actionColor_Space_Test);
         menuTest_Patterns->addAction(actionContrast_Test);
         menuTest_Patterns->addAction(actionScaling_AA_Test);
+        menuTest_Patterns->addSeparator();
+        menuTest_Patterns->addAction(actionNone);
         menuMaintinance->addAction(actionEnable_Maintinance_Mode);
         menuMaintinance->addAction(actionDisable_Maintinance_Mode);
         menuMaintinance->addSeparator();
@@ -742,6 +747,7 @@ public:
         actionContrast_Test->setText(QApplication::translate("MainWindow", "Contrast Test", 0));
         actionScaling_AA_Test->setText(QApplication::translate("MainWindow", "Scaling/AA Test", 0));
         actionImage_Adjustments->setText(QApplication::translate("MainWindow", "Image Adjustments", 0));
+        actionNone->setText(QApplication::translate("MainWindow", "None", 0));
         rawLabel->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "Video Input", 0));
         enableButton->setText(QApplication::translate("MainWindow", "Enable", 0));

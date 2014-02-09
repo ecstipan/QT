@@ -7,6 +7,10 @@ INPUT(
 ./debug\mnetworkthread.o
 ./debug\muithread.o
 ./debug\mallthreads.o
+./debug\consolewindow.o
+./debug\mnetworksocket.o
 ./debug\moc_mainwindow.o
 ./debug\moc_mallthreads.o
+./debug\moc_consolewindow.o
+./debug\moc_mnetworksocket.o
 );

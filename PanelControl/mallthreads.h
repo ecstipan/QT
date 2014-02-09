@@ -17,6 +17,12 @@ public:
     unsigned int cameraFPS;
     unsigned int cameraW;
     unsigned int cameraH;
+
+    int *uiHandleLeft;
+    int *uiHandleRight;
+    int *uiHandleBottom;
+    int *uiHandleTop;
+
 signals:
 
 public slots:
