@@ -146,7 +146,7 @@ MainWindow::~MainWindow()
           thread2->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
     }
-    /* if (thread3) {
+    if (thread3) {
         qDebug() << "Stopping UI Thread...";
         thread3->shutdown=true;
         if(!thread3->wait(1000)) //Wait until it actually has terminated (max. 5 sec)
@@ -155,17 +155,19 @@ MainWindow::~MainWindow()
           thread3->terminate(); //Thread didn't exit in time, probably deadlocked, terminate it!
           thread3->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
-    }*/
+    }
     delete ui;
 }
 
 void MainWindow::updateRawVideo(QImage img)
 {
-    if (this->cameraW != 1280) {
-        QImage temp = img.scaled(1280, 720, Qt::IgnoreAspectRatio, Qt::FastTransformation);
-        this->ui->rawLabel->setPixmap(QPixmap::fromImage(temp));
-    } else {
-        this->ui->rawLabel->setPixmap(QPixmap::fromImage(img));
+    if (!img.isNull()){
+        if (this->cameraW != 1280) {
+            QImage temp = img.scaled(1280, 720, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+            this->ui->rawLabel->setPixmap(QPixmap::fromImage(temp));
+        } else {
+            this->ui->rawLabel->setPixmap(QPixmap::fromImage(img));
+        }
     }
 }
 
@@ -192,10 +194,10 @@ void MainWindow::updateArrayOverlay()
                 if (MPanel::getPanelAtLocation(MPanel::boundLeft + blockx,
                                                MPanel::boundTop + blocky)->hasFault()) {
                     //We're broken :(
-                    painter.setBrush(QBrush(QColor(255, 20, 20, 100)));
+                    painter.setBrush(QBrush(QColor(255, 50, 50, 70)));
                 } else {
                     //The panel is fine!
-                    painter.setBrush(QBrush(QColor(40, 255, 40, 100)));
+                    painter.setBrush(QBrush(QColor(255, 255, 255, 40)));
                 }
                 //so we have our status, let's draw our rectangle
                 int pos_x, pos_y, pan_w, pan_h;
@@ -250,6 +252,8 @@ void MainWindow::handleDropDownCamSelect(int cam)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     //kill our windows
+    shutdownArray();
+    closeUDP();
     qDebug() << "Closing child windows...";
     consoleWindow->destroy = true;
     consoleWindow->close();
@@ -275,7 +279,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
           thread2->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
     }
-    /* if (thread3) {
+    if (thread3) {
         qDebug() << "Stopping UI Thread...";
         thread3->shutdown=true;
         if(!thread3->wait(1000)) //Wait until it actually has terminated (max. 5 sec)
@@ -284,7 +288,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
           thread3->terminate(); //Thread didn't exit in time, probably deadlocked, terminate it!
           thread3->wait(); //Note: We have to wait again here!
         } else qDebug("Stopped!");
-    } */
+    }
     qDebug() << "THreads stopped.  Finishing closing...";
     QMainWindow::closeEvent(event);
 }

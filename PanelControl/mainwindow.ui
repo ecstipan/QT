@@ -529,7 +529,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </rect>
     </property>
     <property name="title">
-     <string>Video Input</string>
+     <string>Live Video Input</string>
     </property>
     <widget class="QPushButton" name="enableButton">
      <property name="geometry">
@@ -590,7 +590,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </rect>
      </property>
      <property name="text">
-      <string>Use Device</string>
+      <string>Update Device</string>
      </property>
     </widget>
    </widget>
@@ -604,7 +604,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </rect>
     </property>
     <property name="title">
-     <string>Image</string>
+     <string>Basic Image Settings</string>
     </property>
     <widget class="QPushButton" name="resButton">
      <property name="geometry">

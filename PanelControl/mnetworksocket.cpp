@@ -12,6 +12,16 @@ MnetworkSocket::MnetworkSocket(QObject *parent) :
 {
     socket = new QUdpSocket(this);
 
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+}
+
+bool MnetworkSocket::isConnected()
+{
+    return (this->socket->state()==QUdpSocket::BoundState);
+}
+
+bool MnetworkSocket::autoBind()
+{
     QHostAddress listenAddress;
     QList<QHostAddress> list = QNetworkInterface::allAddresses();
 
@@ -21,22 +31,20 @@ MnetworkSocket::MnetworkSocket(QObject *parent) :
           if(!list[nIter].isLoopback())
               if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol )
                  logConsole(QString("Interface found on ").append(( list[nIter].toString())));
-
-                 if (list[nIter].toString().contains("130.215.248", Qt::CaseInsensitive))
+                 if (list[nIter].toString().contains("10.10", Qt::CaseInsensitive))
                  {
                      listenAddress = list[nIter];
-                     logConsole(QString("Listening on ").append(( list[nIter].toString())));
-                     break;
+                      break;
                  }
 
       }
 
-    if (socket->bind(listenAddress, 27015))
-        logConsole(QString("UDP Connected!"));
-    else
-        logConsole(QString("UDP Failed to Connect!"));
+    return this->socket->bind(listenAddress, 27015);
+}
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+bool MnetworkSocket::bind(QHostAddress addr)
+{
+    return this->socket->bind(addr, 27015);
 }
 
 void MnetworkSocket::SendVideo(const char *addr, QByteArray data)
@@ -49,10 +57,23 @@ void MnetworkSocket::SendVideo(const char *addr, QByteArray data)
 void MnetworkSocket::reAddress(const char *addr)
 {
     QByteArray header(4, 255);//source address
-    header.append((char)3); //For Video frame data
-    header.append((char)1); //This is the first 16x16 chunk
+    header.append((char)3); //control signal
+    header.append((char)1); //re-address control signal
     if (!socket->writeDatagram(header, QHostAddress(addr), 27015))
        logConsole(QString("Failed Panel Readdress Process!"));
+}
+
+void MnetworkSocket::sendShutdown(const char *addr)
+{
+    QByteArray header(4, 255);//source address
+    header.append((char)3); //control signal
+    header.append((char)10); //shutdown enumeraton
+    socket->writeDatagram(header, QHostAddress(addr), 27015);
+}
+
+void MnetworkSocket::close()
+{
+    this->socket->close();;
 }
 
 void MnetworkSocket::readyRead()
@@ -65,18 +86,21 @@ void MnetworkSocket::readyRead()
 
     socket->readDatagram(buffer.data(), buffer.size(),
                              &sender, &senderPort);
-    char* data = buffer.data();
-    if(buffer.size() >= 6) {
-        logConsole(QString("Recieved Incoming Data Packet"));
+    if (!sender.isLoopback())
+    {
+        char* data = buffer.data();
+        if(buffer.size() >= 6) {
+            logConsole(QString("Recieved Incoming Data Packet from ").append(sender.toString()));
 
-        //check for addressing packet
-        if(data[4] == 0x02 && data[5] == 0x03) {
-            int x = (int)data[0];
-            int y = (int)data[1];
-            qDebug() << x << " " << y;
-            if (MPanel::addPanel(x,y)) qDebug() << "Added panel!";
-            MPanel::getPanelAtLocation(x,y)->setIP(sender.toString());
-            logConsole(QString("New Panel Registered From ").append(sender.toString()));
+            //check for addressing packet
+            if(data[4] == 0x02 && data[5] == 0x03) {
+                int x = (int)data[0];
+                int y = (int)data[1];
+                qDebug() << x << " " << y;
+                if (MPanel::addPanel(x,y)) qDebug() << "Added panel!";
+                MPanel::getPanelAtLocation(x,y)->setIP(sender.toString());
+                logConsole(QString("New Panel Registered From ").append(sender.toString()));
+            }
         }
     }
 }

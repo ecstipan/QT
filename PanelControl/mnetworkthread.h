@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QUdpSocket>
 #include "mallthreads.h"
+#include "mnetworksocket.h"
 #include "mpanel.h"
 
 class mNetworkThread : public mAllThreads
@@ -16,7 +17,7 @@ public:
     QMutex* pixelMutex;
     mNetworkThread(QMutex* pixel);
     void run();
-    //void WriteData(QHostAddress, );
+    MnetworkSocket* UDPSocket;
 
 public slots:
     void readReady();

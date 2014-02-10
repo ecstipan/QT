@@ -749,12 +749,12 @@ public:
         actionImage_Adjustments->setText(QApplication::translate("MainWindow", "Image Adjustments", 0));
         actionNone->setText(QApplication::translate("MainWindow", "None", 0));
         rawLabel->setText(QString());
-        groupBox->setTitle(QApplication::translate("MainWindow", "Video Input", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Live Video Input", 0));
         enableButton->setText(QApplication::translate("MainWindow", "Enable", 0));
         disableButton->setText(QApplication::translate("MainWindow", "Disable", 0));
         label->setText(QApplication::translate("MainWindow", "Input Device", 0));
-        useDevice->setText(QApplication::translate("MainWindow", "Use Device", 0));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Image", 0));
+        useDevice->setText(QApplication::translate("MainWindow", "Update Device", 0));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Basic Image Settings", 0));
         resButton->setText(QApplication::translate("MainWindow", "Set Resolution", 0));
         fpsButton->setText(QApplication::translate("MainWindow", "Set Frame Rate", 0));
         label_2->setText(QApplication::translate("MainWindow", "Capture Resolution", 0));

@@ -24,12 +24,14 @@ void mUIThread::run()
             //perform our redraw operation
             updateOverlay();
 
+            /*
             //copy our video image in the BG
             if (globalRawImage.data()->isNull() == false) {
                 QImage temp = *globalRawImage.data();
                 this->parentWindow->updateRawVideo(temp);
                 //qDebug() << "Updating Image";
             } //else qDebug() << "Unable to update GUI";
+            */
         this->pixelMutex->unlock();
         msleep(33);
     }

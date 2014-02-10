@@ -41,7 +41,7 @@ unsigned int cameraHeight = 1080;
 unsigned int cameraFPS = 25;
 
 int uiHandleLeft = 0;
-int uiHandleRight = 1079;
+int uiHandleRight = 1279;
 int uiHandleBottom = 719;
 int uiHandleTop = 0;
 
@@ -67,6 +67,7 @@ void logConsole(QString temp)
 {
     if (mainWindowPointer != NULL)
         mainWindowPointer->addConsoleLogEvent(temp);
+    //qDebug() << temp;
 }
 
 void selectCamera(int cam) {
@@ -76,7 +77,7 @@ void selectCamera(int cam) {
 
 void openCamera() {
     //clear our old video input
-    qDebug() << "Opening camera " << cameraNumber;
+    //qDebug() << "Opening camera " << cameraNumber;
     logConsole(QString("Initializing Camera Interface..."));
     _PixelAccess.lock();
     if (videoInput.isOpened()) videoInput.release();
@@ -106,7 +107,7 @@ void closeCamera(){
 }
 
 void setResolution(int index){
-    qDebug() << "Setting resolution to index " << index;
+    //qDebug() << "Setting resolution to index " << index;
     if (index == 0) {
         cameraWidth = 1920;
         cameraHeight = 1080;
@@ -150,21 +151,25 @@ void setFPS(int index){
 
 void sendVideoFrame(const char *addr, QByteArray data)
 {
-    if (UDPsocket !=  NULL)
+    if (UDPsocket->isConnected())
         UDPsocket->SendVideo(addr, data);
 }
 
 void startAddress(const char *addr)
 {
-    if (UDPsocket !=  NULL)
+    if (UDPsocket->isConnected())
         UDPsocket->reAddress(addr);
 }
 
 void beginReaddressProcess()
 {
-    logConsole(QString("Attempting to find panels... "));
-    startAddress("130.215.248.52");
-    startAddress("130.215.248.255");
+    if (UDPsocket->isConnected()){
+        logConsole(QString("Attempting to find panels... "));
+        //startAddress("130.215.248.52");
+        startAddress("10.10.255.255");
+    } else {
+        logConsole(QString("Not connected to Ethernet!"));
+    }
 }
 
 void setOffsetXStart(int x)
@@ -196,6 +201,28 @@ void setTestPattern(int t)
 {
     testPattern = t;
     if (t != 0) closeCamera();
+}
+
+void autoBind()
+{
+    UDPsocket->autoBind();
+    if (UDPsocket->isConnected())
+        logConsole(QString("Connected to UDP socket!"));
+    else
+        logConsole(QString("Failed to connect to any socket!"));
+}
+
+void shutdownArray()
+{
+    logConsole(QString("Shutting array down..."));
+    //send UDP shutdown commands
+    UDPsocket->sendShutdown("10.10.255.255");
+}
+
+void closeUDP()
+{
+    logConsole(QString("Closing UDP Socket..."));
+    UDPsocket->close();
 }
 
 int main(int argc, char *argv[])
@@ -233,13 +260,13 @@ int main(int argc, char *argv[])
     //Dumps data over UDP
     mNetworkThread  _NetworkUpdateThread(&_PixelAccess);   //Handles Panel and Array Mapping
 
-    //mUIThread       _UIThread(&_PixelAccess);              //Handles UI and Lower Priority Tasks
+    mUIThread       _UIThread(&_PixelAccess);              //Handles UI and Lower Priority Tasks
 
 
     //Assign Pointers
     windowHome.thread1 = &_VideoThread;
     windowHome.thread2 = &_NetworkUpdateThread;
-    //windowHome.thread3 = &_UIThread;
+    windowHome.thread3 = &_UIThread;
     windowHome.mutex = &_PixelAccess;
 
     //Initialize Other things
@@ -248,18 +275,21 @@ int main(int argc, char *argv[])
     _VideoThread.globalProcessedImage = processedVideoInput;
     _VideoThread.cameraFPS = 25;
     _VideoThread.parentWindow = &windowHome;
+    _UIThread.parentWindow = &windowHome;
+    _UIThread.globalRawImage = rawVideoInput;
+    _UIThread.globalProcessedImage = processedVideoInput;
+    _NetworkUpdateThread.UDPSocket = UDPsocket;
 
     logConsole(QString("Initializing threads... "));
     //Start our Threads
     _VideoThread.start(QThread::NormalPriority);
     _NetworkUpdateThread.start(QThread::NormalPriority);
-    //_UIThread.start(QThread::LowPriority);
+    _UIThread.start(QThread::LowPriority);
 
     //Finally ready to display something
     windowHome.show();
 
-    //Let's do some test initialization
-    //beginReaddressProcess();
+    autoBind();
 
     //Let's get the ball rolling...
     return a.exec();

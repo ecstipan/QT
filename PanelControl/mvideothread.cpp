@@ -71,20 +71,23 @@ void mVideoThread::run()
             *this->globalRawImage.data() = QImage((uchar*)matRawInput.data, matRawInput.cols, matRawInput.rows, matRawInput.step, QImage::Format_RGB888);
             *this->globalProcessedImage.data() = processedImage;
 
-            if (globalRawImage.data()->isNull() == false) {
+
+            if (!globalRawImage.isNull() && globalRawImage.data()->isNull() == false) {
                 QImage temp = *globalRawImage.data();
                 this->parentWindow->updateRawVideo(temp);
             }
+
         }
 
         //perform our redraw operation
-        updateOverlay();
+        //updateOverlay();
 
         //Send our frame to the panels
         int inputHeight = 720;
         int inputWidth = 1280;
         unsigned int blockx, blocky;
         //sweep thorugh each block
+        if (!processedImage.isNull())
         for (blockx = 0; blockx < MPanel::arrayWidth; blockx++)
         {
             for (blocky = 0; blocky < MPanel::arrayHeight; blocky++)

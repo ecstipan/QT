@@ -18,6 +18,8 @@ void setOffsetXStart(int x);
 void setOffsetXEnd(int x);
 void setOffsetYStart(int x);
 void setOffsetYEnd(int x);
+void shutdownArray();
+void closeUDP();
 
 #endif // MAIN_H
 
