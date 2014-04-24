@@ -79,7 +79,7 @@ void openCamera() {
     //clear our old video input
     //qDebug() << "Opening camera " << cameraNumber;
     logConsole(QString("Initializing Camera Interface..."));
-    _PixelAccess.lock();
+    QMutexLocker locker(&_PixelAccess);
     if (videoInput.isOpened()) videoInput.release();
 
     videoInput.set(CV_CAP_PROP_FRAME_WIDTH, cameraWidth);
@@ -96,18 +96,17 @@ void openCamera() {
 
     mainWindowPointer->isDisplayingVideo = true;
     testPattern = 0;
-    _PixelAccess.unlock();
 }
 
 void closeCamera(){
-    _PixelAccess.lock();
+    QMutexLocker locker(&_PixelAccess);
     if (videoInput.isOpened()) videoInput.release();
     //mainWindowPointer->isDisplayingVideo = false;
-    _PixelAccess.unlock();
 }
 
 void setResolution(int index){
     //qDebug() << "Setting resolution to index " << index;
+    QMutexLocker locker(&_PixelAccess);
     if (index == 0) {
         cameraWidth = 1920;
         cameraHeight = 1080;
@@ -138,7 +137,7 @@ void setFPS(int index){
     } else if (index == 2){
         cameraFPS = 24;
     } else if (index == 3){
-        cameraFPS = 10;
+        cameraFPS = 60;
     } else if (index == 4){
         cameraFPS = 5;
     } else if (index == 51){
@@ -164,7 +163,7 @@ void startAddress(const char *addr)
 void beginReaddressProcess()
 {
     if (UDPsocket->isConnected()){
-        logConsole(QString("Attempting to find panels... "));
+        //logConsole(QString("Attempting to find panels... "));
         //startAddress("130.215.248.52");
         startAddress("10.10.255.255");
     } else {
@@ -174,21 +173,25 @@ void beginReaddressProcess()
 
 void setOffsetXStart(int x)
 {
-     uiHandleLeft = x;
+    //QMutexLocker locker(&_PixelAccess);
+    uiHandleLeft = x;
 }
 
 void setOffsetXEnd(int x)
 {
+    //QMutexLocker locker(&_PixelAccess);
     uiHandleRight = x;
 }
 
 void setOffsetYStart(int x)
 {
+    //QMutexLocker locker(&_PixelAccess);
     uiHandleTop = x;
 }
 
 void setOffsetYEnd(int x)
 {
+    //QMutexLocker locker(&_PixelAccess);
     uiHandleBottom = x;
 }
 
@@ -199,6 +202,7 @@ void forceGlobalAddress()
 
 void setTestPattern(int t)
 {
+    //QMutexLocker locker(&_PixelAccess);
     testPattern = t;
     if (t != 0) closeCamera();
 }
@@ -227,7 +231,7 @@ void closeUDP()
 
 int main(int argc, char *argv[])
 {
-    QApplication::setStyle("plastique");
+    //QApplication::setStyle("plastique");
     QApplication a(argc, argv);
 
     MainWindow windowHome;
@@ -282,14 +286,17 @@ int main(int argc, char *argv[])
 
     logConsole(QString("Initializing threads... "));
     //Start our Threads
-    _VideoThread.start(QThread::NormalPriority);
-    _NetworkUpdateThread.start(QThread::NormalPriority);
-    _UIThread.start(QThread::LowPriority);
+    _VideoThread.start(QThread::HighestPriority);
+    _NetworkUpdateThread.start(QThread::LowPriority);
+    _UIThread.start(QThread::HighPriority);
 
     //Finally ready to display something
     windowHome.show();
 
     autoBind();
+    setFPS(3);
+    setResolution(2);
+    selectCamera(1);
 
     //Let's get the ball rolling...
     return a.exec();

@@ -88,18 +88,25 @@ void MnetworkSocket::readyRead()
                              &sender, &senderPort);
     if (!sender.isLoopback())
     {
-        char* data = buffer.data();
-        if(buffer.size() >= 6) {
-            logConsole(QString("Recieved Incoming Data Packet from ").append(sender.toString()));
-
-            //check for addressing packet
-            if(data[4] == 0x02 && data[5] == 0x03) {
-                int x = (int)data[0];
-                int y = (int)data[1];
-                qDebug() << x << " " << y;
-                if (MPanel::addPanel(x,y)) qDebug() << "Added panel!";
-                MPanel::getPanelAtLocation(x,y)->setIP(sender.toString());
-                logConsole(QString("New Panel Registered From ").append(sender.toString()));
+        if (sender.toIPv4Address() != this->socket->localAddress().toIPv4Address()) {
+            char* data = buffer.data();
+            if(buffer.size() == 6) {
+                //check for control packets first
+                if (data[4] == 3 && data[5] == 2) {
+                    int x = (int)data[0] + 62;
+                    int y = (int)data[1] + 62;
+                     if (MPanel::panelExistsAt(x,y)) {
+                         //keep the panel alive
+                         MPanel::getPanelAtLocation(x,y)->refresh();
+                     } else {
+                         //add the panel
+                         MPanel::addPanel(x,y);
+                         MPanel::getPanelAtLocation(x,y)->setIP(sender.toString());
+                         logConsole(QString("New Panel Registered From ").append(sender.toString()).append(" at ").append(QString::number((int)x-61)).append(", ").append(QString::number((int)y-61)));
+                     }
+                }
+            } else {
+                logConsole(QString("Recieved malformed packet!  Is there another host on the network?"));
             }
         }
     }
